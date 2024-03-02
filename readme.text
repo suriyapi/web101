@@ -1,0 +1,58 @@
+700
+network create weblab700
+docker run --name mysql --network weblab700 -p 8700:3306 -e MYSQL_ROOT_PASSWORD=weblab700 -e MYSQL_DATABASE=webdb -e MYSQL_USER=weblab700 -e MYSQL_PASSWORD=weblab700 -d mysql:5.7
+docker run --name pma --network weblab700 -p 8701:80 -e PMA_ARBITRARY=1 -d phpmyadmin/phpmyadmin
+
+
+820
+network create weblab820
+docker run --name mysql --network weblab700 -p 8820:3306 -e MYSQL_ROOT_PASSWORD=weblab820 -e MYSQL_DATABASE=webdb -e MYSQL_USER=weblab820 -e MYSQL_PASSWORD=weblab820 -d mysql:5.7
+docker run --name pma --network weblab700 -p 8821:80 -e PMA_ARBITRARY=1 -d phpmyadmin/phpmyadmin
+
+821
+network create weblab821
+docker run --name mysql --network weblab700 -p 8821:3306 -e MYSQL_ROOT_PASSWORD=1111 -e MYSQL_DATABASE=webdb -e MYSQL_USER=weblab821 -e MYSQL_PASSWORD=weblab821 -d mysql:5.7
+docker run --name pma --network weblab700 -p 8822:80 -e PMA_ARBITRARY=1 -d phpmyadmin/phpmyadmin
+
+สร้าง createConnection ก่อนโดย
+
+ปกติประกาศตัวแปรแบบนี้
+let conn mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'yourdb'
+
+แต่เราไม่สามารถประกาศแบบนี้ เพราะ มันคืนค่ามาเป็น conn โดยตัวแปรพวกนี้เราจะเรียนกว่า promise 
+ซึ่งเป็นการทำงานแบบ asynchronous ที่เราสามารถใช้ .then() หรือ .catch() ได้
+
+
+Asynchronous MySQL หมายถึงการดำเนินการที่ไม่จำเป็นต้องรอให้คำสั่ง SQL 
+เสร็จสิ้นก่อนที่จะดำเนินการอื่นต่อไป ในบางกรณีที่มีการประมวลผลซับซ้อนหรือการเชื่อมต่อ
+กับฐานข้อมูลที่มีประสิทธิภาพต่ำ การทำงานแบบ Asynchronous สามารถช่วยเพิ่มประสิทธิภาพ
+และประสิทธิผลของระบบได้ โดยทำให้สามารถดำเนินการกับคำสั่ง SQL 
+ได้พร้อมกันหลายคำสั่งโดยไม่ต้องรอให้คำสั่งก่อนหน้าเสร็จสิ้นก่อน ซึ่งสิ่งนี้สามารถ
+เพิ่มประสิทธิภาพในการประมวลผลข้อมูลขนาดใหญ่หรือในสถานการณ์ที่มีการเข้าถึงฐานข้อมูล
+จำนวนมากพร้อมกันได้ในเวลาเดียวกัน 
+
+mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'yourdb'
+
+
+conn.query มีการ return ผลลัพธ์เป็น array 2 ค่าไว้ครับ (สมมุติชื่อ result)
+1. result[0] เป็นค่าของ rows ทั้งหมดที่ query ออกมาได้
+2. result[1] เป้นค่าของ fields (ชื่อ column) ทั้งหมดที่ query ออกมาได้
+
+ดูเพิ่มเติมได้จากตรง หัวข้อ "Using Promise Wrapper"
+https://www.npmjs.com/package/mysql2#array-results
+
+.catch() คือการที่เราส่งข้อมูลไปบางอย่างแล้วเกิด error ขึ้น 
+แล้วเราต้องการจัดการกับ error นั้นๆ
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+
+
+
