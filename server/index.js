@@ -1,13 +1,13 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
-const mysql = require('mysql2/promise');
-const cors = require('cors');
+const express = require('express')
+const bodyparser = require('body-parser')
+const mysql = require('mysql2/promise')
+const cors = require('cors')
+const app = express()
 
-app.use(bodyParser.json());
-app.use(cors());
+app.use(bodyparser.json())
+app.use(cors())
 
-const port = 8000;
+const port = 8000
 
 let conn = null
 
@@ -16,15 +16,15 @@ const initMySQL = async () => {
     host: 'localhost',
     user: 'root',
     password: 'root',
-    database: 'webdb',
-    port: 8820
+    database: 'tutorial',
+    port: 8889
   })
 }
 
 // path = GET /users สำหรับ get users ทั้งหมดที่บันทึกเข้าไปออกมา
 app.get('/users', async (req, res) => {
   const results = await conn.query('SELECT * FROM users')
-    res.json(results[0])
+  res.json(results[0])
 })
 
 // path = POST /users สำหรับการสร้าง users ใหม่บันทึกเข้าไป
@@ -33,7 +33,7 @@ app.post('/users', async (req, res) => {
     let user = req.body
     const results = await conn.query('INSERT INTO users SET ?', user)
     res.json({
-      message: 'insert okk',
+      message: 'insert ok',
       data: results[0]
     })
   } catch (error) {
@@ -65,7 +65,6 @@ app.get('/users/:id', async (req, res) => {
   }
 })
 
-
 // path = PUT /users/:id สำหรับการแก้ไข users รายคน (ตาม id ที่บันทึกเข้าไป)
 app.put('/users/:id', async (req, res) => {
   try {
@@ -87,6 +86,7 @@ app.put('/users/:id', async (req, res) => {
   }
 })
 
+
 // path DELETE /users/:id สำหรับการลบ users รายคน (ตาม id ที่บันทึกเข้าไป)
 app.delete('/users/:id', async (req, res) => {
   try {
@@ -106,5 +106,5 @@ app.delete('/users/:id', async (req, res) => {
 
 app.listen(port, async (req, res) => {
   await initMySQL()
-  console.log('http server running on', + port);
+  console.log('http server run at ' + port)
 })
